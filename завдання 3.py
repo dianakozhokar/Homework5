@@ -1,33 +1,26 @@
 import pandas as pd
 
-input_file = "student_performance.csv"
-sort_columns = ["total_score", "grade"]
+data = pd.read_csv("student_performance.csv", sep=";", encoding="utf-8")
 
-try:
-    df = pd.read_csv(input_file, sep=';', encoding='utf-8')
-except UnicodeDecodeError:
-    df = pd.read_csv(input_file, sep=';', encoding='cp1251')
+column_to_sort = "total_score"
 
-df.columns = df.columns.str.strip()
+if column_to_sort not in data.columns:
+    print(f"Стовпець '{column_to_sort}' не знайдено. Доступні стовпці:")
+    print(list(data.columns))
+    exit()
 
-print("Назви стовпців:", df.columns.tolist())
 
-data = df.values.tolist()
+selection_sorted = data.values.tolist()
+col_index = list(data.columns).index(column_to_sort)
 
-col_indices = [df.columns.get_loc(col) for col in sort_columns]
-
-for i in range(len(data)):
+n = len(selection_sorted)
+for i in range(n):
     min_index = i
-    for j in range(i + 1, len(data)):
-        for col in col_indices:
-            if data[j][col] < data[min_index][col]:
-                min_index = j
-                break
-            elif data[j][col] > data[min_index][col]:
-                break
-    data[i], data[min_index] = data[min_index], data[i]
+    for j in range(i + 1, n):
+        if selection_sorted[j][col_index] < selection_sorted[min_index][col_index]:
+            min_index = j
+    selection_sorted[i], selection_sorted[min_index] = selection_sorted[min_index], selection_sorted[i]
 
-df_sorted = pd.DataFrame(data, columns=df.columns)
+sorted_data = pd.DataFrame(selection_sorted, columns=data.columns)
 
-print("\n=== Відсортовані дані ===")
-print(df_sorted)
+print(sorted_data.head)
