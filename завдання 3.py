@@ -24,3 +24,4 @@ for i in range(n):
 sorted_data = pd.DataFrame(selection_sorted, columns=data.columns)
 
 print(sorted_data.head)
+print(sorted_data.head)
